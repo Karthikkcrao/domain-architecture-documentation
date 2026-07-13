@@ -1,0 +1,20 @@
+{
+  "folders": [
+    { "name": "Architecture Package", "path": ".." },
+    { "name": "Account Service", "path": "../../account-service" },
+    { "name": "Account Service V2", "path": "../../account-service-v2" },
+    { "name": "Account BFF", "path": "../../account-bff" },
+    { "name": "Account Webhooks", "path": "../../account-webhook-service" },
+    { "name": "Account Events", "path": "../../account-event-processor" },
+    { "name": "Account Contracts", "path": "../../account-contracts" },
+    { "name": "Account Infrastructure", "path": "../../account-infrastructure" }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/target": true,
+      "**/build": true,
+      "**/.gradle": true,
+      "**/node_modules": true
+    }
+  }
+}

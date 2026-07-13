@@ -1,0 +1,14 @@
+domain-architecture-copilot-package/.github/agents/domain-ecosystem-documentation.agent.md
+domain-architecture-copilot-package/.github/agents/domain-service-documentation.agent.md
+domain-architecture-copilot-package/.github/copilot-instructions.md
+domain-architecture-copilot-package/CUSTOMIZATION.md
+domain-architecture-copilot-package/PACKAGE-MANIFEST.txt
+domain-architecture-copilot-package/QUICKSTART.md
+domain-architecture-copilot-package/README.md
+domain-architecture-copilot-package/USAGE.md
+domain-architecture-copilot-package/docs/README.md
+domain-architecture-copilot-package/examples/account-domain-example.md
+domain-architecture-copilot-package/examples/run-domain-ecosystem.prompt.md
+domain-architecture-copilot-package/examples/run-single-repository.prompt.md
+domain-architecture-copilot-package/examples/sample-workspace.code-workspace
+domain-architecture-copilot-package/scripts/validate-package.sh

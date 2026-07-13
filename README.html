@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="User guide and worked Account domain example for GitHub Copilot architecture documentation agents." />
+  <title>Domain Architecture Documentation Agents — User Guide and Account Domain Example</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-2: #eef3f8;
+      --text: #172033;
+      --muted: #5b667a;
+      --border: #d7dee8;
+      --accent: #0b5cab;
+      --accent-2: #154c79;
+      --success: #176b3a;
+      --warning: #8a5a00;
+      --danger: #a12622;
+      --code: #f2f4f7;
+      --shadow: 0 10px 30px rgba(23, 32, 51, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.58;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--accent-2);
+      white-space: nowrap;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.92rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0b3b66 0%, #0b5cab 55%, #2d7cc0 100%);
+      color: white;
+      padding: 72px 24px 62px;
+    }
+
+    .hero-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      margin: 12px 0 18px;
+      line-height: 1.1;
+      max-width: 980px;
+    }
+
+    .hero p {
+      max-width: 900px;
+      font-size: 1.12rem;
+      opacity: 0.96;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-weight: 650;
+      border: 1px solid transparent;
+    }
+
+    .button.primary {
+      background: white;
+      color: #0b3b66;
+    }
+
+    .button.secondary {
+      border-color: rgba(255,255,255,0.55);
+      color: white;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .layout {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 24px 70px;
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 30px;
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 100px);
+      overflow: auto;
+    }
+
+    .toc h2 {
+      font-size: 1rem;
+      margin: 0 0 10px;
+    }
+
+    .toc a {
+      display: block;
+      padding: 6px 0;
+      font-size: 0.91rem;
+      color: var(--muted);
+    }
+
+    main { min-width: 0; }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-top: 0;
+      color: var(--accent-2);
+    }
+
+    h3 {
+      color: #233b5d;
+      margin-top: 28px;
+    }
+
+    h4 { color: #2d4667; }
+
+    .lead {
+      font-size: 1.07rem;
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      background: #fbfcfe;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      background: #eef6ff;
+      border-radius: 0 8px 8px 0;
+      margin: 18px 0;
+    }
+
+    .callout.success {
+      border-left-color: var(--success);
+      background: #edf8f1;
+    }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background: #fff8e6;
+    }
+
+    .callout.danger {
+      border-left-color: var(--danger);
+      background: #fff0ef;
+    }
+
+    code {
+      background: var(--code);
+      padding: 0.14rem 0.32rem;
+      border-radius: 4px;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    pre {
+      background: #121b2b;
+      color: #eef4ff;
+      border-radius: 10px;
+      padding: 18px;
+      overflow: auto;
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    .copy-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -10px;
+      margin-bottom: 6px;
+    }
+
+    button.copy {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 8px;
+      font-size: 0.94rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: var(--surface-2);
+      color: #243955;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      margin: 0 0 16px;
+      padding: 16px 16px 16px 58px;
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fbfcfe;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-right: 5px;
+    }
+    .confirmed { background: #dcefe3; color: #155b33; }
+    .indicated { background: #e6effb; color: #1d4f83; }
+    .assumed { background: #fff1cc; color: #6d4b00; }
+    .gap { background: #f9dddd; color: #8b1f1c; }
+
+    .diagram {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: #fff;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    details {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin: 12px 0;
+      background: #fbfcfe;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 650;
+      padding: 14px 16px;
+    }
+
+    details > div {
+      padding: 0 16px 16px;
+    }
+
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .repo-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: #fbfcfe;
+    }
+
+    .repo-card h4 {
+      margin: 0 0 6px;
+    }
+
+    .muted { color: var(--muted); }
+
+    footer {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 24px 40px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      nav.toc { position: static; max-height: none; }
+      .cards, .repo-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .topbar, nav.toc, .hero-actions, .copy-row { display: none !important; }
+      body { background: white; }
+      .hero { color: black; background: white; padding: 10px 0 20px; }
+      .layout { display: block; padding: 0; }
+      section { box-shadow: none; break-inside: avoid; }
+      a { color: black; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">Domain Architecture Documentation Agents</div>
+      <div class="top-links">
+        <a href="#quick-start">Quick start</a>
+        <a href="#account-example">Account example</a>
+        <a href="#prompts">Sample prompts</a>
+        <a href="#validation">Validation</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">GitHub Copilot · Java/Spring · AWS/OpenShift</div>
+      <h1>User Guide and Account Domain Architecture Example</h1>
+      <p>
+        This package helps engineering and architecture teams generate evidence-based HTML documentation
+        for individual Java/Spring microservice repositories and for the complete multi-repository domain ecosystem.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#quick-start">Start in 10 minutes</a>
+        <a class="button secondary" href="#account-example">View Account architecture</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <a href="#overview">1. What this package does</a>
+      <a href="#deliverables">2. What it generates</a>
+      <a href="#package-structure">3. Package structure</a>
+      <a href="#quick-start">4. Quick start</a>
+      <a href="#setup-models">5. Recommended setup models</a>
+      <a href="#single-repo">6. Single-repository documentation</a>
+      <a href="#multi-repo">7. Multi-repository documentation</a>
+      <a href="#account-example">8. Account domain example</a>
+      <a href="#runtime-example">9. Runtime interaction example</a>
+      <a href="#dependency-example">10. Dependency model</a>
+      <a href="#repo-details">11. Repository documentation details</a>
+      <a href="#prompts">12. Sample prompts</a>
+      <a href="#outputs">13. Generated outputs</a>
+      <a href="#validation">14. Review and validation</a>
+      <a href="#troubleshooting">15. Troubleshooting</a>
+    </nav>
+
+    <main>
+      <section id="overview">
+        <h2>1. What this package does</h2>
+        <p class="lead">
+          The package provides reusable GitHub Copilot agent instructions for documenting both a single service repository
+          and the complete architecture of a banking domain spread across multiple repositories.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <h3>Repository-level view</h3>
+            <p>Documents controllers, services, business rules, repositories, data structures, mappings, integrations, security, deployment, testing, and operational characteristics.</p>
+          </div>
+          <div class="card">
+            <h3>Domain-level view</h3>
+            <p>Stitches together BFFs, versioned services, webhooks, event processors, adapters, shared contracts, data services, infrastructure, and runtime dependencies.</p>
+          </div>
+          <div class="card">
+            <h3>Evidence-based output</h3>
+            <p>Separates confirmed implementation from strongly indicated relationships, assumptions, and gaps. Repository paths and implementation references provide traceability.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="deliverables">
+        <h2>2. What it generates</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Scope</th>
+                <th>Generated file</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Individual repository</td>
+                <td><code>docs/domain-service-architecture.html</code></td>
+                <td>Detailed implementation, runtime, security, data, deployment, and business-flow documentation for one repository.</td>
+              </tr>
+              <tr>
+                <td>Individual repository</td>
+                <td><code>docs/domain-service-inventory.json</code></td>
+                <td>Machine-readable component, API, data, event, dependency, and evidence inventory.</td>
+              </tr>
+              <tr>
+                <td>Complete domain</td>
+                <td><code>docs/domain-ecosystem-architecture.html</code></td>
+                <td>Overarching multi-repository architecture, capability map, dependency model, cross-repository flows, data ownership, and deployment view.</td>
+              </tr>
+              <tr>
+                <td>Complete domain</td>
+                <td><code>docs/domain-repository-inventory.json</code></td>
+                <td>Machine-readable inventory of domain repositories, runtime services, contracts, APIs, events, webhooks, data stores, and dependencies.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <strong>Recommended use:</strong> Generate the repository-level document first for each application repository,
+          then generate the domain ecosystem document from a multi-root workspace containing all related repositories.
+        </div>
+      </section>
+
+      <section id="package-structure">
+        <h2>3. Package structure</h2>
+        <pre><code>domain-architecture-documentation/
+├── .github/
+│   ├── copilot-instructions.md
+│   └── agents/
+│       ├── domain-service-documentation.agent.md
+│       └── domain-ecosystem-documentation.agent.md
+├── examples/
+├── prompts/
+├── scripts/
+├── README.md
+├── README.html
+├── QUICKSTART.md
+├── USAGE.md
+├── CUSTOMIZATION.md
+└── MANIFEST.md</code></pre>
+
+        <p>
+          The <code>.github/copilot-instructions.md</code> file supplies repository-wide guidance.
+          The files under <code>.github/agents/</code> define the specialized documentation workflows.
+        </p>
+      </section>
+
+      <section id="quick-start">
+        <h2>4. Quick start</h2>
+        <ol class="steps">
+          <li>
+            <strong>Create or select a GitHub repository.</strong><br />
+            Use a private or internal repository for banking and enterprise workloads.
+          </li>
+          <li>
+            <strong>Copy the package files into the repository root.</strong><br />
+            Confirm that <code>.github/copilot-instructions.md</code> and <code>.github/agents/</code> are directly under the repository root.
+          </li>
+          <li>
+            <strong>Open the repository in Visual Studio Code.</strong><br />
+            Ensure GitHub Copilot and GitHub Copilot Chat are installed and authenticated.
+          </li>
+          <li>
+            <strong>For a single repository, run the repository agent.</strong><br />
+            Ask Copilot Agent mode to use <code>domain-service-documentation</code>.
+          </li>
+          <li>
+            <strong>For a complete domain, open all related repositories in a multi-root workspace.</strong><br />
+            Include the architecture repository, BFFs, services, webhooks, events, contracts, deployment, and infrastructure repositories.
+          </li>
+          <li>
+            <strong>Run the ecosystem agent.</strong><br />
+            Ask Copilot to use <code>domain-ecosystem-documentation</code> and name the target domain, such as <code>Account</code>.
+          </li>
+          <li>
+            <strong>Review before publishing.</strong><br />
+            Validate security, secrets masking, diagrams, source references, assumptions, architecture findings, and open questions.
+          </li>
+        </ol>
+
+        <div class="callout success">
+          <strong>Success criterion:</strong> The generated HTML should explain both how each repository is built and
+          how its deployed components participate in end-to-end domain behavior at runtime.
+        </div>
+      </section>
+
+      <section id="setup-models">
+        <h2>5. Recommended setup models</h2>
+
+        <h3>Model A — Instructions within every application repository</h3>
+        <p>Best when each repository team owns and updates its own architecture documentation.</p>
+        <pre><code>account-service/
+├── .github/
+│   ├── copilot-instructions.md
+│   └── agents/
+│       └── domain-service-documentation.agent.md
+├── src/
+├── pom.xml
+└── docs/</code></pre>
+
+        <h3>Model B — Central domain architecture repository</h3>
+        <p>Best for the consolidated multi-repository domain view.</p>
+        <pre><code>account-domain-architecture/
+├── .github/
+│   ├── copilot-instructions.md
+│   └── agents/
+│       ├── domain-service-documentation.agent.md
+│       └── domain-ecosystem-documentation.agent.md
+├── account-domain.code-workspace
+├── prompts/
+└── docs/</code></pre>
+
+        <div class="callout">
+          Use both models together: local documentation remains close to source code, while the central architecture repository
+          becomes the domain-level entry point and review location.
+        </div>
+      </section>
+
+      <section id="single-repo">
+        <h2>6. Single-repository documentation workflow</h2>
+        <p>The repository agent should inspect:</p>
+        <ul>
+          <li>Spring Boot entry points, controllers, service classes, domain models, validators, repositories, entities, mappers, schedulers, and exception handlers.</li>
+          <li>OpenAPI definitions, API models, event schemas, webhook handlers, client adapters, messaging configuration, and database migrations.</li>
+          <li>Maven or Gradle files, Dockerfiles, Helm charts, Kubernetes/OpenShift resources, Terraform/CloudFormation, CI/CD workflows, tests, and observability configuration.</li>
+        </ul>
+
+        <h3>Typical repository output sections</h3>
+        <div class="repo-grid">
+          <div class="repo-card"><h4>Architecture</h4><p>System context, internal components, deployment topology, external systems, and trust boundaries.</p></div>
+          <div class="repo-card"><h4>Business logic</h4><p>Critical rules, validation, decision logic, transaction boundaries, failures, and source-code traceability.</p></div>
+          <div class="repo-card"><h4>Data</h4><p>Entities, schemas, data dictionary, transformations, mappings, encryption, persistence, and ownership.</p></div>
+          <div class="repo-card"><h4>Operations</h4><p>Health, logging, metrics, tracing, resilience, CI/CD, runtime configuration, and support gaps.</p></div>
+        </div>
+      </section>
+
+      <section id="multi-repo">
+        <h2>7. Multi-repository domain documentation workflow</h2>
+        <p>
+          The ecosystem agent discovers repositories in the workspace, determines which belong to the domain,
+          classifies them, maps them to runtime services, and separates build-time dependencies from runtime interactions.
+        </p>
+
+        <h3>Recommended workspace</h3>
+        <pre><code>account-domain-workspace/
+├── account-domain-architecture/
+├── account-service/
+├── account-service-v2/
+├── account-bff/
+├── account-webhook-service/
+├── account-event-processor/
+├── account-data-service/
+├── account-contracts/
+├── account-infrastructure/
+└── account-test-automation/</code></pre>
+
+        <h3>What the ecosystem agent must distinguish</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Boundary</th><th>Meaning</th><th>Example</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Repository boundary</td><td>Source-control and ownership boundary.</td><td><code>account-bff</code></td></tr>
+              <tr><td>Build artifact boundary</td><td>Produced JAR, library, schema package, or container image.</td><td><code>account-bff-2.4.0.jar</code></td></tr>
+              <tr><td>Deployable boundary</td><td>Kubernetes/OpenShift deployment or AWS workload.</td><td><code>account-mobile-bff</code></td></tr>
+              <tr><td>Runtime service boundary</td><td>Process or network endpoint active at runtime.</td><td><code>account-query-v2</code></td></tr>
+              <tr><td>Domain boundary</td><td>Business capability and ownership boundary.</td><td>Account servicing</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="account-example">
+        <h2>8. Worked example — Account domain</h2>
+        <p class="lead">
+          The following example illustrates how multiple repositories can work together under one Account domain.
+          Names and relationships are illustrative and must be validated against actual repositories.
+        </p>
+
+        <div class="callout warning">
+          <strong>Evidence status for this example:</strong> This is a sample architecture only.
+          In a generated document, each component and relationship must be classified as
+          <span class="badge confirmed">Confirmed</span>
+          <span class="badge indicated">Strongly indicated</span>
+          <span class="badge assumed">Assumed</span>
+          or <span class="badge gap">Gap</span>.
+        </div>
+
+        <h3>Illustrative repositories</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Repository</th>
+                <th>Category</th>
+                <th>Primary responsibility</th>
+                <th>Typical runtime component</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>account-bff</code></td><td>BFF</td><td>Channel-specific orchestration and response aggregation.</td><td><code>account-mobile-bff</code></td></tr>
+              <tr><td><code>account-service</code></td><td>Core domain service</td><td>Account retrieval, status, servicing, and business rules.</td><td><code>account-service-v1</code></td></tr>
+              <tr><td><code>account-service-v2</code></td><td>Versioned domain service</td><td>Newer API contract and revised domain behavior.</td><td><code>account-service-v2</code></td></tr>
+              <tr><td><code>account-balance-service</code></td><td>Capability service</td><td>Current and available balance retrieval.</td><td><code>account-balance</code></td></tr>
+              <tr><td><code>account-webhook-service</code></td><td>Webhook service</td><td>Outbound status-change notifications and delivery tracking.</td><td><code>account-webhook-dispatcher</code></td></tr>
+              <tr><td><code>account-event-processor</code></td><td>Event consumer</td><td>Consumes account events and updates projections or downstream systems.</td><td><code>account-event-consumer</code></td></tr>
+              <tr><td><code>account-data-service</code></td><td>Data service</td><td>Controlled data access for account records and reference data.</td><td><code>account-data-api</code></td></tr>
+              <tr><td><code>account-contracts</code></td><td>Contract repository</td><td>OpenAPI, AsyncAPI, JSON/Avro schema, generated clients, and shared DTOs.</td><td>No runtime service</td></tr>
+              <tr><td><code>account-infrastructure</code></td><td>Infrastructure repository</td><td>OpenShift, AWS, networking, messaging, secrets references, and observability resources.</td><td>No application runtime</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Sample overarching architecture</h3>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart LR
+  subgraph Channels["Channels"]
+    MOB["Mobile App"]
+    WEB["Web Portal"]
+    PARTNER["Partner / External Consumer"]
+  end
+
+  subgraph Edge["API and Experience Layer"]
+    APIGW["API Gateway / OpenShift Route"]
+    BFF["account-bff<br/>Runtime: account-mobile-bff"]
+  end
+
+  subgraph Domain["Account Domain Services"]
+    ACCV1["account-service<br/>Runtime: account-service-v1"]
+    ACCV2["account-service-v2<br/>Runtime: account-service-v2"]
+    BAL["account-balance-service<br/>Runtime: account-balance"]
+    DATA["account-data-service<br/>Runtime: account-data-api"]
+  end
+
+  subgraph Async["Events and Webhooks"]
+    BUS[("Kafka / Event Bus")]
+    EVT["account-event-processor<br/>Runtime: account-event-consumer"]
+    WH["account-webhook-service<br/>Runtime: account-webhook-dispatcher"]
+  end
+
+  subgraph Data["Data Layer"]
+    ADB[("Account DB")]
+    CACHE[("Account Cache")]
+  end
+
+  subgraph External["External Banking Systems"]
+    CORE["Core Banking"]
+    CRM["Customer / CRM"]
+    NOTIFY["External Webhook Receiver"]
+  end
+
+  MOB -->|HTTPS| APIGW
+  WEB -->|HTTPS| APIGW
+  APIGW --> BFF
+  BFF -->|Account summary| ACCV2
+  BFF -->|Balance request| BAL
+  PARTNER -->|Versioned API| APIGW
+  APIGW -->|v1 route| ACCV1
+  APIGW -->|v2 route| ACCV2
+
+  ACCV1 --> DATA
+  ACCV2 --> DATA
+  BAL --> DATA
+  DATA --> ADB
+  BAL --> CACHE
+
+  DATA --> CORE
+  ACCV2 --> CRM
+
+  ACCV1 -. AccountUpdated .-> BUS
+  ACCV2 -. AccountStatusChanged .-> BUS
+  BUS -. consumes .-> EVT
+  BUS -. triggers .-> WH
+  WH -->|Signed webhook| NOTIFY
+          </div>
+        </div>
+
+        <h3>How to interpret the architecture</h3>
+        <ul>
+          <li>The BFF is optimized for a channel and can aggregate responses from multiple domain services.</li>
+          <li>Versioned services can coexist while clients migrate from v1 to v2.</li>
+          <li>The data service centralizes database access when direct database ownership is intentionally separated.</li>
+          <li>Events support asynchronous propagation without forcing all consumers into a synchronous call chain.</li>
+          <li>The webhook service converts internal domain events into externally delivered callbacks.</li>
+          <li>The contracts repository affects build-time compatibility but does not necessarily create a runtime dependency.</li>
+          <li>The infrastructure repository defines runtime deployment and platform resources but may not produce an application service.</li>
+        </ul>
+      </section>
+
+      <section id="runtime-example">
+        <h2>9. Sample runtime interaction — Account summary retrieval</h2>
+        <p>
+          This sequence demonstrates how a channel request may cross the BFF, versioned Account service,
+          balance service, data layer, and cache.
+        </p>
+
+        <div class="diagram">
+          <div class="mermaid">
+sequenceDiagram
+  autonumber
+  actor User
+  participant App as Mobile App
+  participant BFF as account-mobile-bff
+  participant Account as account-service-v2
+  participant Balance as account-balance
+  participant Data as account-data-api
+  participant DB as Account DB
+  participant Cache as Account Cache
+
+  User->>App: Open account summary
+  App->>BFF: GET /mobile/accounts/{id}/summary
+  BFF->>BFF: Validate token and request
+  par Account details
+    BFF->>Account: GET /v2/accounts/{id}
+    Account->>Data: Retrieve account
+    Data->>DB: Read account record
+    DB-->>Data: Account entity
+    Data-->>Account: Canonical account model
+    Account-->>BFF: Account response
+  and Balance
+    BFF->>Balance: GET /accounts/{id}/balance
+    Balance->>Cache: Check current balance
+    alt Cache hit
+      Cache-->>Balance: Balance
+    else Cache miss
+      Balance->>Data: Retrieve latest balance
+      Data->>DB: Read balance
+      DB-->>Data: Balance record
+      Data-->>Balance: Balance model
+      Balance->>Cache: Update cache
+    end
+    Balance-->>BFF: Balance response
+  end
+  BFF->>BFF: Aggregate and transform for mobile
+  BFF-->>App: Account summary
+  App-->>User: Display summary
+          </div>
+        </div>
+
+        <h3>What the generated documentation should capture</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Area</th><th>Required detail</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Entry point</td><td>Route, HTTP method, authentication, authorization, headers, validation, and request model.</td></tr>
+              <tr><td>BFF orchestration</td><td>Parallel versus sequential calls, timeout behavior, aggregation rules, transformations, and partial-failure handling.</td></tr>
+              <tr><td>Domain services</td><td>Business rules, source classes and methods, data dependencies, transaction boundaries, and errors.</td></tr>
+              <tr><td>Data access</td><td>Entity mapping, queries, schema, encryption, masking, caching, and system-of-record ownership.</td></tr>
+              <tr><td>Response</td><td>Field mapping, data filtering, defaulting, sensitive-data handling, and response codes.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="dependency-example">
+        <h2>10. Sample dependency model</h2>
+        <p>Build-time and runtime dependencies should be shown separately.</p>
+
+        <h3>Build-time dependencies</h3>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart LR
+  CONTRACTS["account-contracts"]
+  BFF["account-bff"]
+  V1["account-service"]
+  V2["account-service-v2"]
+  BAL["account-balance-service"]
+  TEST["account-test-automation"]
+
+  CONTRACTS -->|Generated API models| BFF
+  CONTRACTS -->|OpenAPI interfaces| V1
+  CONTRACTS -->|OpenAPI interfaces| V2
+  CONTRACTS -->|Shared schemas| BAL
+  CONTRACTS -->|Test contracts| TEST
+          </div>
+        </div>
+
+        <h3>Runtime dependencies</h3>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart LR
+  BFF["account-mobile-bff"]
+  V2["account-service-v2"]
+  BAL["account-balance"]
+  DATA["account-data-api"]
+  BUS[("Event Bus")]
+  WH["account-webhook-dispatcher"]
+
+  BFF -->|REST| V2
+  BFF -->|REST| BAL
+  V2 -->|REST| DATA
+  BAL -->|REST| DATA
+  V2 -. publishes .-> BUS
+  BUS -. event .-> WH
+          </div>
+        </div>
+
+        <h3>Relationship types used in the dependency matrix</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Marker</th><th>Relationship</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><strong>B</strong></td><td>Build-time dependency</td><td>Generated client or shared library.</td></tr>
+              <tr><td><strong>R</strong></td><td>Runtime synchronous dependency</td><td>REST or gRPC call.</td></tr>
+              <tr><td><strong>E</strong></td><td>Event or messaging dependency</td><td>Kafka topic or SQS queue.</td></tr>
+              <tr><td><strong>W</strong></td><td>Webhook dependency</td><td>Signed outbound callback.</td></tr>
+              <tr><td><strong>D</strong></td><td>Data dependency</td><td>Shared schema or direct database access.</td></tr>
+              <tr><td><strong>C</strong></td><td>Contract dependency</td><td>OpenAPI, AsyncAPI, Avro, or JSON Schema.</td></tr>
+              <tr><td><strong>I</strong></td><td>Infrastructure dependency</td><td>Helm chart, Terraform module, or route configuration.</td></tr>
+              <tr><td><strong>T</strong></td><td>Test dependency</td><td>Contract tests or shared test fixtures.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="repo-details">
+        <h2>11. Multiple-repository documentation details</h2>
+        <p>
+          Each repository should have an individual architecture page, while the domain ecosystem page summarizes and links them.
+        </p>
+
+        <details open>
+          <summary>Account BFF repository</summary>
+          <div>
+            <ul>
+              <li>Consuming channels and user journeys.</li>
+              <li>APIs exposed to mobile, web, branch, or partner channels.</li>
+              <li>Domain APIs called, orchestration sequence, aggregation, and transformation.</li>
+              <li>Token propagation, authorization, caching, timeouts, retries, and partial-response behavior.</li>
+              <li>Business logic that belongs in the BFF versus logic delegated to domain services.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Core and versioned Account service repositories</summary>
+          <div>
+            <ul>
+              <li>Business capabilities owned by each version.</li>
+              <li>API paths, supported consumers, contract differences, migration behavior, and deprecation evidence.</li>
+              <li>Duplicate or inconsistent business logic across versions.</li>
+              <li>Shared versus independent persistence and event models.</li>
+              <li>Version adapters, translation layers, and compatibility risks.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Webhook repository</summary>
+          <div>
+            <ul>
+              <li>Inbound and outbound webhook flows.</li>
+              <li>Registration, callback URL management, signature validation, retry, delivery guarantees, and duplicate handling.</li>
+              <li>Payload transformation from internal events to external webhook contracts.</li>
+              <li>Dead-letter handling, audit logging, and failure escalation.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Event processor repository</summary>
+          <div>
+            <ul>
+              <li>Topics, queues, event names, versions, producers, and consumers.</li>
+              <li>Partitioning, ordering, correlation, idempotency, replay, retry, and dead-letter behavior.</li>
+              <li>Projection updates, downstream integrations, and eventual-consistency impacts.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Data service and persistence repositories</summary>
+          <div>
+            <ul>
+              <li>System-of-record ownership, schemas, entities, tables, relationships, and migrations.</li>
+              <li>Cross-service database access, shared databases, duplicate persistence, replication, and caches.</li>
+              <li>Data classifications, encryption, masking, retention, audit fields, and transaction boundaries.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Contract, infrastructure, deployment, and testing repositories</summary>
+          <div>
+            <ul>
+              <li>OpenAPI, AsyncAPI, Avro, JSON Schema, Protobuf, shared DTOs, and generated clients.</li>
+              <li>AWS resources, OpenShift/Kubernetes manifests, Helm, Terraform, secrets references, routes, and network policies.</li>
+              <li>Build pipelines, artifact release order, environment promotion, compatibility checks, and rollback dependencies.</li>
+              <li>Contract tests, integration tests, performance tests, mocks, simulators, and test-data dependencies.</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <section id="prompts">
+        <h2>12. Sample Copilot prompts</h2>
+
+        <h3>Generate documentation for one Account repository</h3>
+        <div class="copy-row"><button class="copy" data-copy="singlePrompt">Copy prompt</button></div>
+        <pre id="singlePrompt"><code>Use the domain-service-documentation agent.
+
+Analyze this repository as part of the Account banking domain.
+
+Generate:
+- docs/domain-service-architecture.html
+- docs/domain-service-inventory.json
+
+Document the service purpose, APIs, controllers, components, business logic,
+repositories, entities, database structures, data elements, transformations,
+translations, encryption, events, webhooks, external integrations, AWS and
+OpenShift deployment, CI/CD, security, observability, and end-to-end runtime flows.
+
+Trace important statements to repository-relative files, classes, methods, and
+configuration keys. Mark findings as Confirmed, Strongly indicated, Assumed, or Gap.
+Do not expose credentials, tokens, keys, certificates, or customer-sensitive data.
+
+Validate HTML navigation, diagram syntax, repository references, and masking
+before completing.</code></pre>
+
+        <h3>Generate the complete Account domain ecosystem document</h3>
+        <div class="copy-row"><button class="copy" data-copy="domainPrompt">Copy prompt</button></div>
+        <pre id="domainPrompt"><code>Use the domain-ecosystem-documentation agent.
+
+Analyze all repositories in this workspace that belong to the Account domain.
+
+Generate:
+- docs/domain-ecosystem-architecture.html
+- docs/domain-repository-inventory.json
+
+Discover and classify core services, versioned services, BFFs, webhook services,
+event processors, data services, shared libraries, contract repositories,
+infrastructure repositories, deployment repositories, test repositories, and adapters.
+
+Map repository boundaries to build artifacts, container images, deployments,
+runtime services, APIs, events, webhooks, data stores, contracts, and external systems.
+
+Document build-time and runtime dependencies separately. Include repository landscape,
+capability map, runtime dependency graph, build dependency graph, repository-to-runtime
+mapping, version relationships, BFF orchestration, webhook lifecycle, event flows,
+data ownership, cross-repository transformations, security boundaries, AWS/OpenShift
+deployment, CI/CD release dependencies, failure impact, coupling risks, findings,
+recommendations, and open questions.
+
+Trace critical Account journeys such as account summary retrieval, balance retrieval,
+account status update, account closure, statement access, AccountStatusChanged event,
+and outbound webhook notification.
+
+Link to each repository's docs/domain-service-architecture.html where available.
+Use only evidence-supported relationships and classify every relationship as Confirmed,
+Strongly indicated, Assumed, or Gap. Validate coverage, Mermaid syntax, links, evidence
+references, and sensitive-data masking before completing.</code></pre>
+      </section>
+
+      <section id="outputs">
+        <h2>13. Expected generated outputs</h2>
+        <h3>Within each service repository</h3>
+        <pre><code>&lt;repository&gt;/
+└── docs/
+    ├── domain-service-architecture.html
+    └── domain-service-inventory.json</code></pre>
+
+        <h3>Within the central architecture repository</h3>
+        <pre><code>account-domain-architecture/
+└── docs/
+    ├── domain-ecosystem-architecture.html
+    └── domain-repository-inventory.json</code></pre>
+
+        <h3>Recommended documentation hierarchy</h3>
+        <div class="diagram">
+          <div class="mermaid">
+flowchart TD
+  ENTRY["Account Domain Architecture<br/>domain-ecosystem-architecture.html"]
+  INV["Domain Repository Inventory<br/>domain-repository-inventory.json"]
+  BFF["account-bff<br/>domain-service-architecture.html"]
+  V1["account-service<br/>domain-service-architecture.html"]
+  V2["account-service-v2<br/>domain-service-architecture.html"]
+  WH["account-webhook-service<br/>domain-service-architecture.html"]
+  EVT["account-event-processor<br/>domain-service-architecture.html"]
+  DATA["account-data-service<br/>domain-service-architecture.html"]
+
+  ENTRY --> INV
+  ENTRY --> BFF
+  ENTRY --> V1
+  ENTRY --> V2
+  ENTRY --> WH
+  ENTRY --> EVT
+  ENTRY --> DATA
+          </div>
+        </div>
+      </section>
+
+      <section id="validation">
+        <h2>14. Review and validation checklist</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>Architecture</h3>
+            <ul>
+              <li>All repositories are included, excluded, or marked unclassified.</li>
+              <li>Repository and runtime-service boundaries are not confused.</li>
+              <li>Build-time and runtime dependencies are separated.</li>
+              <li>Versioned APIs and migration paths are documented.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Security and data</h3>
+            <ul>
+              <li>No credentials, secrets, tokens, keys, or customer data appear.</li>
+              <li>Trust boundaries and encryption controls are documented.</li>
+              <li>Data ownership, shared databases, masking, and retention gaps are visible.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Quality and traceability</h3>
+            <ul>
+              <li>Important findings have file, class, method, or configuration references.</li>
+              <li>Assumptions and gaps are clearly labelled.</li>
+              <li>Mermaid diagrams render and match the written inventory.</li>
+              <li>HTML navigation and repository links work.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout danger">
+          Do not publish generated architecture documentation until security, application,
+          data, platform, and domain owners have reviewed it for accuracy and information classification.
+        </div>
+      </section>
+
+      <section id="troubleshooting">
+        <h2>15. Troubleshooting</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Problem</th><th>Likely cause</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Agent cannot see sibling repositories.</td>
+                <td>The repositories were not added to the same VS Code multi-root workspace.</td>
+                <td>Add every required folder through <strong>File → Add Folder to Workspace</strong>, save the workspace, and rerun the agent.</td>
+              </tr>
+              <tr>
+                <td>Copilot ignores the custom agent.</td>
+                <td>The agent file is not under <code>.github/agents/</code> or the workspace was not reopened.</td>
+                <td>Correct the path, reload Visual Studio Code, and explicitly ask Copilot to use the named agent.</td>
+              </tr>
+              <tr>
+                <td>Generated diagrams are too large.</td>
+                <td>Too many repositories and relationships are shown in one graph.</td>
+                <td>Request a summary diagram plus detailed diagrams grouped by architectural layer, business capability, or dependency type.</td>
+              </tr>
+              <tr>
+                <td>Relationships are inferred from repository names only.</td>
+                <td>Insufficient code or configuration evidence was found.</td>
+                <td>Require file-level evidence and downgrade unsupported relationships to <strong>Assumed</strong> or <strong>Gap</strong>.</td>
+              </tr>
+              <tr>
+                <td>Mermaid does not render offline.</td>
+                <td>This guide loads Mermaid from a public CDN.</td>
+                <td>For restricted environments, download an approved Mermaid JavaScript build internally and replace the script reference with a local file.</td>
+              </tr>
+              <tr>
+                <td>The generated output exposes sensitive values.</td>
+                <td>Configuration or sample data was copied without masking.</td>
+                <td>Remove the values immediately, rotate exposed secrets when necessary, and strengthen masking instructions before regeneration.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>
+      Sample documentation for GitHub Copilot domain architecture agents.
+      Adapt repository names, domain capabilities, deployment terminology, and governance requirements to your organization.
+    </p>
+  </footer>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: "strict",
+      theme: "neutral",
+      flowchart: { htmlLabels: true, curve: "basis" },
+      sequence: { useMaxWidth: true, wrap: true }
+    });
+  </script>
+
+  <script>
+    document.querySelectorAll("button.copy").forEach(button => {
+      button.addEventListener("click", async () => {
+        const target = document.getElementById(button.dataset.copy);
+        const text = target.innerText;
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = button.textContent;
+          button.textContent = "Copied";
+          setTimeout(() => button.textContent = original, 1400);
+        } catch {
+          button.textContent = "Copy manually";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
